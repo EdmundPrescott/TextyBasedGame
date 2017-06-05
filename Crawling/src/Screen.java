@@ -17,21 +17,17 @@ public class Screen{
 	private static JPanel screen;
 	private static int FrameX;
 	private static int FrameY;
-	private static char[][] board = { 
-	    	new char[] { '@', '@', ' ', '@', '@', '@', '@', '@' },
-	        new char[] { '@', '@', ' ', ' ', '@', '@', '@', '@' },
-	        new char[] { '@', '@', 'T', ' ', '@', '@', '@', '@' },
-	        new char[] { '@', '@', 'I', ' ', '@', '@', '@', '@' },
-	        new char[] { '@', '@', ' ', ' ', ' ', '@', '@', '@' },
-	        new char[] { '@', ' ', ' ', ' ', ' ', '@', '@', '@' },
-	        new char[] { '@', 'p', '@', '@', '@', '@', '@', '@' } 
-	    	};
+	private static int fontSize;
+	private static char[][] board;
 	
 	
-	public Screen(int frameX,int frameY){
+	@SuppressWarnings("deprecation")
+	public Screen(int frameX,int frameY, int FontSize){
 		FrameX=frameX;
 		FrameY=frameY;
-		
+		fontSize=FontSize;
+		setBoard();
+		//printBoard();
 		newscreenContents();
 		newScreen();
 		newuserPanel();
@@ -40,12 +36,8 @@ public class Screen{
 	}
 	
 	
-	public static void setBoard(char[][] newBoard){
-		board=newBoard;
-	}
-	
-	public static char[][] getBoard(){
-		return board;
+	public static void setBoard(){
+		board=Board.getBoard();
 	}
 	
     @SuppressWarnings("unused")
@@ -63,19 +55,18 @@ public class Screen{
     
     private static String toBoardString() { 
         String boardString = "";
-        for (int i = 0; i < board.length; i++) {
-            char[] line = board[i];
-            for (int j = 0; j < line.length; j++) {
-                boardString += line[j];
-            }
-            boardString += "\n";
-        }
+        for(int i=0;i<board[i].length;i++){
+			for(int j=0;j<board.length;j++){
+				boardString += board[j][i];
+			}
+			boardString += "\n";
+		}
         return boardString;
     }
     
   	private static void newscreenContents(){
   		screenContents = new JTextArea(toBoardString());
-  		screenContents.setFont(new Font("Courier", Font.PLAIN, 12));
+  		screenContents.setFont(new Font("Courier", Font.PLAIN, fontSize));
   		screenContents.setBackground(Color.BLACK);
   		screenContents.setForeground(Color.CYAN);
   		screenContents.setEditable(false);
@@ -101,14 +92,24 @@ public class Screen{
               public void keyPressed(KeyEvent e) {
                   System.out.println("Pressed " + e.getKeyChar());
                   int code = e.getKeyCode();
-                  if(code==KeyEvent.VK_1){
-                	  board[5] = new char[] { 'b', 'o', 'o', 'B', '@', '@', '@', '@' };
-                	  updateFrame();
+                  if(code==KeyEvent.VK_W){
+                	  Board.movePlayer('w');
+                      updateFrame();
                   }
                   
-                  if(code==KeyEvent.VK_2){
-                	  board[5] = new char[] { 'b', 'o', 'o', 'B', 'i', 'e', 's', '@' };
-                	  updateFrame();
+                  if(code==KeyEvent.VK_S){
+                	  Board.movePlayer('s');
+                      updateFrame();
+                  }
+                  
+                  if(code==KeyEvent.VK_D){
+                	  Board.movePlayer('d');
+                      updateFrame();
+                  }
+                  
+                  if(code==KeyEvent.VK_A){
+                	  Board.movePlayer('a');
+                      updateFrame();
                   }
                   
               }
@@ -137,20 +138,16 @@ public class Screen{
     
     static void resizedScreen(int frameX,int frameY){
     	frame.setSize(new Dimension(frameX, frameY));
-    	
     }
 
-    static void updateFrame(){
+    @SuppressWarnings("deprecation")
+	static void updateFrame(){
+    	setBoard();
     	newscreenContents();
     	newScreen();
     	frame.add(screen);
         frame.add(userPanel);
         frame.show();
-    }
-    
-    static void example(){
-    	board[5] = new char[] { 'b', 'o', 'o', 'B', '@', '@', '@', '@' };
-    	updateFrame();
     }
 	
 }
